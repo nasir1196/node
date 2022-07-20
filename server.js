@@ -1,13 +1,21 @@
 const express = require( "express" );
 const fs = require( "fs" );
 const { request } = require( "http" );
+const cors = require( "cors" );
+const morgan = require( "morgan" );
 const app = express();
 const PORT = 4000;
 
+app.use( express.json() );
+app.use( express.urlencoded( { extended: true } ) );
+app.use( morgan( "dev" ) );
+app.use( cors() );
+app.use( globalMiddleware );
 
 
 app.get( "/", ( req, res ) =>
 {
+    console.log( req.url );
     res.send( "Hello Alien" );
 } );
 
@@ -69,4 +77,12 @@ function handler ( req, res, next )
     // read request object
     // Process request
     // response request result
+}
+
+
+function globalMiddleware ( req, res, next )
+{
+    console.log( `${ req.method } - ${ req.url }` );
+    console.log( "I'm a global middleware" );
+    next();
 }
